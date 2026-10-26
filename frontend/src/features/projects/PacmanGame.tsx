@@ -26,7 +26,7 @@ const PacmanGame = ({ onBack }: { onBack: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const socketRef = useRef<Socket | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [status, setStatus] = useState<'connecting' | 'waiting' | 'playing' | 'ended'>('connecting');
+  const [status, setStatus] = useState<'connecting' | 'waiting' | 'playing' | 'ended' | 'unavailable'>('connecting');
 
   useEffect(() => {
     const socket = io(BACKEND_HTTP_URL);
@@ -51,6 +51,11 @@ const PacmanGame = ({ onBack }: { onBack: () => void }) => {
 
     socket.on('player_disconnected', () => {
       setStatus('ended');
+    });
+
+    // Sent when the backend runs without the compiled C++ engine.
+    socket.on('game_unavailable', () => {
+      setStatus('unavailable');
     });
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -217,6 +222,13 @@ const PacmanGame = ({ onBack }: { onBack: () => void }) => {
            <div className="absolute inset-0 flex items-center justify-center">
               <p className="mono text-white animate-pulse">Initializing_Grid...</p>
            </div>
+        )}
+
+        {status === 'unavailable' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-black/80 backdrop-blur-sm gap-4 z-20 px-8 text-center">
+             <p className="text-2xl font-bold mono text-amber-400 tracking-tighter uppercase">Engine_Offline</p>
+             <p className="mono text-sm opacity-60">The multiplayer engine is not available on this server right now.</p>
+          </div>
         )}
 
         {status === 'ended' && (
