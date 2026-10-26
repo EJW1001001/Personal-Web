@@ -6,7 +6,12 @@
   "scripts": {
     "start": "tsx src/main/server.ts",
     "dev": "tsx watch src/main/server.ts",
-    "dev:3d": "tsx watch src/main/game-of-life-3d-server.ts"
+    "dev:3d": "tsx watch src/main/game-of-life-3d-server.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit -p tsconfig.test.json",
+    "build:engine": "cd src/infrastructure/engine/cpp && node-gyp rebuild",
+    "test": "vitest run",
+    "test:py": "venv/bin/python -m pytest src/infrastructure/engine/python"
   },
   "dependencies": {
     "cors": "^2.8.6",
