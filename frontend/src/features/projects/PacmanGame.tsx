@@ -22,6 +22,13 @@ interface GameState {
   maze: number[][];
 }
 
+/**
+ * Full-screen 2-player Pacman over Socket.IO.
+ *
+ * Joins the server's matchmaking queue on mount, renders the server-authoritative
+ * state (`game_state_update`, computed by the C++ engine) on a canvas, and sends
+ * arrow-key moves as `player_move`. Requires two browser tabs/players.
+ */
 const PacmanGame = ({ onBack }: { onBack: () => void }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const socketRef = useRef<Socket | null>(null);

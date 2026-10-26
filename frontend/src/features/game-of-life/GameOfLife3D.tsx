@@ -29,6 +29,15 @@ function GridRenderer({ grid }: { grid: number[][][] }) {
   return <>{cells}</>;
 }
 
+/**
+ * Interactive 3D Game of Life viewer.
+ *
+ * Connects to the backend's plain WebSocket server (`BACKEND_WS_URL`), renders
+ * every live cell of the shared 16x16x16 volume as a cube with React Three
+ * Fiber, and sends `step` / `randomize` / `clear` commands. The simulation
+ * runs on the server, so every open browser sees the same state. Reconnects
+ * with exponential backoff (3 s up to 15 s) if the server goes away.
+ */
 export default function GameOfLife3D() {
   const [grid, setGrid] = useState<number[][][]>([]);
   const [connected, setConnected] = useState(false);
