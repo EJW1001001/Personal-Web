@@ -1,21 +1,27 @@
+/**
+ * @file GameEngine.cpp
+ * @brief Player movement, ghost AI and state snapshots for GameEngine.
+ */
 #include "GameEngine.hpp"
 #include <cstdlib>
 #include <ctime>
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 GameEngine::GameEngine() {
-    std::srand(std::time(nullptr));
-    // Initial monsters based on original code
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
     ghosts.push_back(new Actor(10.5f, 8.5f, 1));
     ghosts.push_back(new Actor(13.5f, 1.5f, 2));
     ghosts.push_back(new Actor(4.5f, 6.5f, 3));
-    ghosts.push_back(new Actor(2.5f, 13.5f, 4));
+    // Direction must be 0..3; the original value 4 left this ghost frozen forever.
+    ghosts.push_back(new Actor(2.5f, 13.5f, 0));
+}
+
+GameEngine::~GameEngine() {
+    for (auto& entry : players) delete entry.second;
+    for (auto* g : ghosts) delete g;
 }
 
 void GameEngine::addPlayer(const std::string& id) {
+    removePlayer(id);  // avoid leaking the old Actor if the id is re-added
     players[id] = new Actor(1.5f, 1.5f, 0);
     scores[id] = 0;
 }
@@ -34,7 +40,7 @@ void GameEngine::movePlayer(const std::string& id, int dir) {
     Actor* p = players[id];
     float nx = p->getX();
     float ny = p->getY();
-    float step = 0.15f; // Increased speed slightly
+    const float step = 0.15f;
 
     if (dir == 2) nx -= step; // 'left'
     if (dir == 0) nx += step; // 'right'
@@ -49,15 +55,14 @@ void GameEngine::movePlayer(const std::string& id, int dir) {
         p->setPosition(nx, ny);
         p->setDir(dir);
         
-        // Eat pellet
-        int gridX = (int)(nx + 0.5f);
-        int gridY = (int)(ny + 0.5f);
-        if (!maze.isBlocked(gridX, gridY)) {
-            auto matrix = maze.getMatrix();
-            if (matrix[gridY][gridX] == 2) {
-                maze.eatPellet(gridX, gridY);
-                scores[id] += 10;
-            }
+        // Eat the pellet on the tile the player is in. Positions are
+        // continuous with x.5 at a tile centre (see Actor), so the tile is
+        // floor(x). Rounding here would eat the pellet of the next tile.
+        int gridX = static_cast<int>(nx);
+        int gridY = static_cast<int>(ny);
+        if (maze.hasPellet(gridX, gridY)) {
+            maze.eatPellet(gridX, gridY);
+            scores[id] += 10;
         }
     }
 }
@@ -66,7 +71,7 @@ void GameEngine::updateMonster(Actor* ghost) {
     float x = ghost->getX();
     float y = ghost->getY();
     int dir = ghost->getDir();
-    float step = 0.08f;
+    const float step = 0.08f;
 
     int nextX = (int)(x + (dir == 2 ? -0.4f : (dir == 0 ? 0.4f : 0)));
     int nextY = (int)(y + (dir == 3 ? -0.4f : (dir == 1 ? 0.4f : 0)));

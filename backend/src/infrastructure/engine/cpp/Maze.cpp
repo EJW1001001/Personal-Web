@@ -1,3 +1,7 @@
+/**
+ * @file Maze.cpp
+ * @brief Level layout and tile queries for Maze.
+ */
 #include "Maze.hpp"
 
 Maze::Maze() {
@@ -20,14 +24,24 @@ Maze::Maze() {
     };
 }
 
+namespace {
+bool inBounds(int x, int y) {
+    return x >= 0 && x < Maze::SIZE && y >= 0 && y < Maze::SIZE;
+}
+}  // namespace
+
 bool Maze::isBlocked(int x, int y) const {
-    if (x < 0 || x >= 15 || y < 0 || y >= 15) return true;
-    return matrix[y][x] == 1; // Corrected to [y][x] and check for wall
+    if (!inBounds(x, y)) return true;
+    return matrix[y][x] == Wall;
+}
+
+bool Maze::hasPellet(int x, int y) const {
+    return inBounds(x, y) && matrix[y][x] == Pellet;
 }
 
 void Maze::eatPellet(int x, int y) {
-    if (x >= 0 && x < 15 && y >= 0 && y < 15 && matrix[y][x] == 2) {
-        matrix[y][x] = 0;
+    if (hasPellet(x, y)) {
+        matrix[y][x] = Empty;
     }
 }
 
