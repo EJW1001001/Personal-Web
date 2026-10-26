@@ -11,3 +11,5 @@ build/
 .claude/
 # Course slides (not project code)
 presentaciones ML/
+.ruff_cache/
+.pytest_cache/
