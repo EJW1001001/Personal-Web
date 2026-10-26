@@ -21,3 +21,23 @@ describe('loadPacmanEngine', () => {
     expect(loadPacmanEngine('/nonexistent/pacman_engine.node')).toBeNull();
   });
 });
+
+const addon = loadPacmanEngine();
+
+describe.runIf(addon)('native PacmanEngine addon (only when built)', () => {
+  it('exposes the engine to JS and scores a pellet on the first move', () => {
+    const engine = new addon!();
+    engine.addPlayer('a');
+    engine.movePlayer('a', Direction.Right);
+    const state = engine.getState();
+    expect(state.players.a.score).toBe(10);
+    expect(state.ghosts).toHaveLength(4);
+    expect(state.maze).toHaveLength(15);
+  });
+
+  it('throws a TypeError for bad arguments instead of aborting the process', () => {
+    const engine = new addon!();
+    expect(() => engine.addPlayer(5 as unknown as string)).toThrow(TypeError);
+    expect(() => engine.movePlayer('a', 'x' as unknown as Direction)).toThrow(TypeError);
+  });
+});

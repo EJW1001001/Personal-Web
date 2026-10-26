@@ -1,6 +1,26 @@
+/**
+ * @file binding.cpp
+ * @brief N-API (node-addon-api) wrapper exposing GameEngine to Node as `PacmanEngine`.
+ *
+ * JS usage (see `pacman-engine.ts` for the TypeScript types):
+ * @code
+ * const { PacmanEngine } = require('./build/Release/pacman_engine.node');
+ * const engine = new PacmanEngine();
+ * engine.addPlayer(socketId);
+ * engine.movePlayer(socketId, 0);   // 0 right, 1 down, 2 left, 3 up
+ * engine.tick();
+ * const { players, ghosts, maze } = engine.getState();
+ * @endcode
+ *
+ * Built with `NAPI_DISABLE_CPP_EXCEPTIONS`, so wrong argument types throw a
+ * JS `TypeError` via explicit checks instead of C++ exceptions.
+ */
 #include <napi.h>
 #include "GameEngine.hpp"
 
+/**
+ * @brief JS class `PacmanEngine`; each JS instance owns one GameEngine.
+ */
 class PacmanAddon : public Napi::ObjectWrap<PacmanAddon> {
 public:
     static Napi::Object Init(Napi::Env env, Napi::Object exports);
@@ -16,6 +36,7 @@ private:
     Napi::Value GetState(const Napi::CallbackInfo& info);
 };
 
+/// Registers the `PacmanEngine` class on the module exports.
 Napi::Object PacmanAddon::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "PacmanEngine", {
         InstanceMethod("addPlayer", &PacmanAddon::AddPlayer),
@@ -35,30 +56,51 @@ Napi::Object PacmanAddon::Init(Napi::Env env, Napi::Object exports) {
 
 PacmanAddon::PacmanAddon(const Napi::CallbackInfo& info) : Napi::ObjectWrap<PacmanAddon>(info) {}
 
+namespace {
+/// Throws a JS TypeError and returns true if `info[index]` is not a string.
+bool rejectNonString(const Napi::CallbackInfo& info, size_t index) {
+    if (info.Length() > index && info[index].IsString()) return false;
+    Napi::TypeError::New(info.Env(), "Expected a string player id").ThrowAsJavaScriptException();
+    return true;
+}
+}  // namespace
+
+/// `addPlayer(id: string): void`
 Napi::Value PacmanAddon::AddPlayer(const Napi::CallbackInfo& info) {
+    if (rejectNonString(info, 0)) return info.Env().Undefined();
     std::string id = info[0].As<Napi::String>();
     engine.addPlayer(id);
     return info.Env().Undefined();
 }
 
+/// `removePlayer(id: string): void`
 Napi::Value PacmanAddon::RemovePlayer(const Napi::CallbackInfo& info) {
+    if (rejectNonString(info, 0)) return info.Env().Undefined();
     std::string id = info[0].As<Napi::String>();
     engine.removePlayer(id);
     return info.Env().Undefined();
 }
 
+/// `movePlayer(id: string, dir: number): void`
 Napi::Value PacmanAddon::MovePlayer(const Napi::CallbackInfo& info) {
+    if (rejectNonString(info, 0)) return info.Env().Undefined();
+    if (info.Length() < 2 || !info[1].IsNumber()) {
+        Napi::TypeError::New(info.Env(), "Expected a numeric direction").ThrowAsJavaScriptException();
+        return info.Env().Undefined();
+    }
     std::string id = info[0].As<Napi::String>();
     int dir = info[1].As<Napi::Number>().Int32Value();
     engine.movePlayer(id, dir);
     return info.Env().Undefined();
 }
 
+/// `tick(): void` - advances the ghosts one step.
 Napi::Value PacmanAddon::Tick(const Napi::CallbackInfo& info) {
     engine.tick();
     return info.Env().Undefined();
 }
 
+/// `getState(): { players, ghosts, maze }` - deep copy of the game state as plain JS objects.
 Napi::Value PacmanAddon::GetState(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     auto state = engine.getState();
@@ -84,7 +126,7 @@ Napi::Value PacmanAddon::GetState(const Napi::CallbackInfo& info) {
         ghosts.Set(i, gObj);
     }
     result.Set("ghosts", ghosts);
-    
+
     Napi::Array maze = Napi::Array::New(env, state.maze.size());
     for (size_t i = 0; i < state.maze.size(); ++i) {
         Napi::Array row = Napi::Array::New(env, state.maze[i].size());
