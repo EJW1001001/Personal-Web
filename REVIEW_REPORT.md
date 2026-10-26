@@ -1,10 +1,10 @@
-# Review report: CV_WEB
+# Review report: Personal Web (formerly CV_WEB)
 
 Branch: `claude/quality-review` (not pushed). Reviewed against `QUALITY_STANDARDS.md`.
 
 ## Summary
 
-Despite the folder name, CV_WEB is **Emmanuel's personal portfolio / CV website**
+Despite its former name (CV_WEB), Personal Web is **Emmanuel's personal portfolio / CV website**
 (React 19 + Vite + Tailwind, single page: hero, metrics, technical focus, experience,
 education, research interests, skills, projects). It embeds two live, server-driven
 demos: a shared **3D Game of Life** (React Three Fiber client, simulation on a

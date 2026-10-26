@@ -1,6 +1,6 @@
-# CV_WEB: portfolio site with live 3D Game of Life and multiplayer Pacman
+# Personal Web: portfolio site with live 3D Game of Life and multiplayer Pacman
 
-CV_WEB is Emmanuel Valenciano's personal portfolio / CV website. It is a single-page
+Personal Web (formerly CV_WEB) is Emmanuel Valenciano's personal portfolio / CV website. It is a single-page
 React app with a hero, technical focus, experience, education, skills and projects
 sections. It also embeds two **live, server-driven demos**: a shared **3D Game of
 Life** (16×16×16 volume rendered with React Three Fiber; the simulation runs on the
@@ -83,7 +83,7 @@ for components, protocols and data flow.
 ## Project structure
 
 ```
-CV_WEB/
+Personal-Web/
 ├── backend/
 │   ├── src/
 │   │   ├── domain/            # Pure Game of Life rules (2D and 3D), no I/O

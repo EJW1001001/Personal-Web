@@ -1,6 +1,6 @@
 # Architecture
 
-This document describes how CV_WEB is built today, as it is in the code. For setup
+This document describes how Personal Web is built today, as it is in the code. For setup
 and commands, see the [README](../README.md).
 
 ## 1. Overview
