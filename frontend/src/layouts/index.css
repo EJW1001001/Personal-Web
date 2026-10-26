@@ -1,0 +1,408 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Sora:wght@400;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-bg-color: #faf9f6;
+  --color-accent-color: #4a5d4e;
+  --color-accent-secondary: #7a6a52;
+  --color-text-primary: #111111;
+  --color-text-secondary: #4b5563;
+  --color-text-tertiary: #9ca3af;
+  --color-glass-bg: rgba(255, 255, 255, 0.4);
+  --color-glass-border: rgba(255, 255, 255, 0.2);
+  --color-card-bg: #faf8f4;
+  --color-bg-beige: #faf9f6;
+  --color-accent-sand: #a89272;
+  --color-moss-green: #4a5d4e;
+  --color-vibrant-gold: #d4af37;
+  --color-deep-forest: #2d3d2f;
+  --color-glare-white: rgba(255, 255, 255, 0.8);
+}
+
+:root {
+  --font-title: "Sora", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --color-moss: #4a5d4e;
+  --color-beige: #faf9f6;
+}
+
+/* Wrapped in Tailwind's `base` layer so utility classes (`p-*`, `m-*`, `mb-*`, …)
+   — which live in the higher-precedence `utilities` layer — can actually override
+   these resets. Unlayered rules always beat layered ones regardless of specificity,
+   so leaving this outside `@layer` silently defeated every padding/margin utility
+   in the app (`pt-*`, `mb-*`, `space-y-*`, etc. all computed to 0). */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-bg-color);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-family: var(--font-title);
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-family: var(--font-title);
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-family: var(--font-title);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  p {
+    font-family: var(--font-body);
+    font-size: 18px;
+  }
+}
+
+.btn-moss,
+.btn-hero,
+.btn-hero-primary {
+  background: var(--color-moss);
+  color: var(--color-beige);
+  padding: 18px 40px;
+  border-radius: 16px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: none;
+  font-family: var(--font-body);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.btn-moss:hover,
+.btn-hero:hover,
+.btn-hero-primary:hover {
+  background: #3d4c3e;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(74, 93, 78, 0.3);
+}
+
+.btn-beige,
+.btn-hero-secondary {
+  background: var(--color-beige);
+  color: var(--color-moss);
+  padding: 18px 40px;
+  border-radius: 16px;
+  font-weight: 600;
+  border: 1px solid rgba(74, 93, 78, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  font-family: var(--font-body);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.btn-beige:hover,
+.btn-hero-secondary:hover {
+  background: white;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
+}
+
+.glass {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 32px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03),
+    inset 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+.glare-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 80%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.group:hover .glare-effect {
+  opacity: 1;
+}
+
+.glass-deep {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 80px -20px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #4a6741, #7a6a52);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+@keyframes moss-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-moss-gradient {
+  animation: moss-gradient 6s ease infinite;
+}
+
+@keyframes moss-celeste-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-moss-celeste-gradient {
+  animation: moss-celeste-gradient 5s ease infinite;
+}
+
+/* Shimmer text animation for Hero name */
+@keyframes shimmer-text {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.animate-shimmer-text {
+  animation: shimmer-text 15s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Center column layout and vertical guide lines for About pages */
+:root {
+  --center-width: 92rem; /* widened for better project display */
+}
+
+.centered-content {
+  max-width: var(--center-width);
+  margin: 0 auto;
+  position: relative;
+  z-index: 10; /* above guides */
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.vertical-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.vertical-guides .guide {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: rgba(
+    148,
+    163,
+    184,
+    0.6
+  ); /* match horizontal divider tone */
+}
+.vertical-guides .left {
+  left: calc(50% - (var(--center-width) / 2));
+}
+.vertical-guides .right {
+  left: calc(50% + (var(--center-width) / 2) - 1px);
+}
+
+@media (max-width: 1024px) {
+  .vertical-guides {
+    display: none;
+  }
+  .centered-content {
+    max-width: 100%;
+  }
+}
+
+/* Styles for Carousel native scrollbar */
+.carousel-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+.carousel-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+.carousel-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.carousel-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 9999px;
+}
+.carousel-scroll::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* --- Technological Laboratory Utilities --- */
+.tech-grid {
+  background-image:
+    linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hud-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: rgba(212, 175, 55, 0.3);
+  pointer-events: none;
+  z-index: 20;
+}
+.hud-corner-tl {
+  top: 12px;
+  left: 12px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+.hud-corner-tr {
+  top: 12px;
+  right: 12px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+.hud-corner-bl {
+  bottom: 12px;
+  left: 12px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+.hud-corner-br {
+  bottom: 12px;
+  right: 12px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+.mono-label {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.tech-bracket {
+  position: relative;
+  padding: 0 0.5rem;
+}
+.tech-bracket::before,
+.tech-bracket::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-color: rgba(212, 175, 55, 0.2);
+}
+.tech-bracket::before {
+  left: 0;
+  border-left: 1px solid;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.tech-bracket::after {
+  right: 0;
+  border-right: 1px solid;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+ 
+/* --- New Rich Telemetry Utilities --- */
+.tech-bar-container {
+  display: flex;
+  gap: 1.5px;
+  height: 8px; /* Shorter charts as requested */
+  align-items: flex-end;
+}
+.tech-bar {
+  width: 2px; /* Thinner bars */
+  background: var(--color-vibrant-gold);
+  opacity: 0.2;
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+.group:hover .tech-bar {
+  opacity: 0.8;
+}
+
+@keyframes activity-pulse {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1); }
+}
+
+.animate-activity {
+  animation: activity-pulse 1.5s ease-in-out infinite;
+  transform-origin: bottom;
+}

@@ -1,0 +1,13 @@
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+dist/
+build/
+*.node
+.claude/
+# Course slides (not project code)
+presentaciones ML/
