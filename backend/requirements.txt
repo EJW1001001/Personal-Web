@@ -1,0 +1,2 @@
+# Runtime dependency of the Python Game of Life engine.
+numpy>=1.26

@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.test.json",
     "build:engine": "cd src/infrastructure/engine/cpp && node-gyp rebuild",
     "test": "vitest run",
-    "test:py": "venv/bin/python -m pytest src/infrastructure/engine/python"
+    "test:py": "venv/bin/python -m pytest src/infrastructure/engine/python",
+    "test:cpp": "cmake -S src/infrastructure/engine/cpp -B build-tests && cmake --build build-tests && ctest --test-dir build-tests --output-on-failure"
   },
   "dependencies": {
     "cors": "^2.8.6",
