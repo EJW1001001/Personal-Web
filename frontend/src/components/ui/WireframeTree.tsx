@@ -319,7 +319,7 @@ const WireframeTree = () => {
     }
   }, []);
 
-  // ── Draw loop ──
+  // ── Draw one frame (the requestAnimationFrame loop lives in the effect below) ──
   const draw = useCallback((time: number) => {
     const cvs = canvasRef.current;
     if (!cvs) return;
@@ -735,8 +735,6 @@ const WireframeTree = () => {
       ctx.ellipse(cx, sg.y, sg.rx, sg.ry, 0, 0, Math.PI * 2);
       ctx.fill();
     }
-
-    rafRef.current = requestAnimationFrame(draw);
   }, []);
 
   // ── Lifecycle ──
@@ -761,9 +759,14 @@ const WireframeTree = () => {
       }
     };
 
+    const loop = (time: number) => {
+      draw(time);
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
     resize();
     window.addEventListener('resize', resize);
-    rafRef.current = requestAnimationFrame(draw);
+    rafRef.current = requestAnimationFrame(loop);
 
     return () => {
       window.removeEventListener('resize', resize);
